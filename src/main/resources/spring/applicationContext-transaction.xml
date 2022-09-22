@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:aop="http://www.springframework.org/schema/aop"
+	   xmlns:tx="http://www.springframework.org/schema/tx"
+	   xmlns:mvc="http://www.springframework.org/schema/mvc"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-4.3.xsd
+	http://www.springframework.org/schema/aop
+	http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+	http://www.springframework.org/schema/tx
+	http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
+	http://www.springframework.org/schema/mvc
+	http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd">
+
+
+	<bean id="transactionManager"
+		  class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+
+	<tx:annotation-driven transaction-manager="transactionManager" />
+
+
+	<!--开启Shiro的注解支持-->
+	<!--	<bean class="org.apache.shiro.spring.LifecycleBeanPostProcessor" id="lifecycleBeanPostProcessor"></bean>-->
+	<!--	<bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" depends-on="lifecycleBeanPostProcessor"></bean>-->
+	<!--	<bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">-->
+	<!--		<property name="securityManager" ref="defaultWebSecurityManager"></property>-->
+	<!--	</bean>-->
+<!--	声明一个数据源-->
+	<bean id="defaultWebSecurityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<!--注入认证器-->
+		<property name="authenticator" ref="modularrealmauthenticator"/>
+		<!--注入数据域-->
+		<property name="realm" ref="oaSysRealm"/>
+	</bean>
+	<!--定义数据域-->
+	<bean id="oaSysRealm" class="com.ssm.shiro.MyRealm"></bean>
+	<!--认证器-->
+	<bean id="modularrealmauthenticator" class="org.apache.shiro.authc.pam.ModularRealmAuthenticator">
+		<!--使用策略-->
+		<property name="authenticationStrategy">
+			<bean class="org.apache.shiro.authc.pam.AtLeastOneSuccessfulStrategy"></bean>
+		</property>
+	</bean>
+
+	<!--4. 配置 LifecycleBeanPostProcessor. 可以自定的来调用配置在 Spring IOC 容器中 shiro bean 的生命周期方法-->
+	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
+	<!--5. 启用 IOC 容器中使用 shiro 的注解. 但必须在配置了 LifecycleBeanPostProcessor 之后才可以使用.-->
+	<bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"
+		  depends-on="lifecycleBeanPostProcessor"/>
+	<bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+		<property name="securityManager" ref="defaultWebSecurityManager"/>
+	</bean>
+
+
+	<!--	<bean id="ActionInterceptor" class="ActionInterceptor"></bean>-->
+
+	<!--	<mvc:interceptors>-->
+	<!--		<mvc:interceptor></mvc:interceptor>-->
+	<!--	</mvc:interceptors>-->
+
+	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<property name="securityManager" ref="defaultWebSecurityManager"/>
+		<!--登录页-->
+		<property name="loginUrl" value="/"/>
+		<!--认证成功的页面-->
+		<!--		<property name="successUrl" value="/admin/index.jsp"/>-->
+		<!--		认证失败的页面-->
+		<!--		<property name="unauthorizedUrl" value=""/>-->
+
+		<property name="filterChainDefinitions">
+			<value>
+				<!--前台不拦截-->
+				/shop-user/*.jsp=anon
+				/admin/LoginOut.do=anon
+				/admin/login.jsp=anon
+				/Shop-SSM/login.do=anon
+				/admin/adminLogin.do=anon
+				/admin=anon
+				/Shop-SSM/shop-user/**=anon
+				/shop-user/**=anon
+				/login.do=anon
+				/static/**=anon
+				/Shop-SSM/css/**=anon
+				/Shop-SSM/js/**=anon
+				/shop-user/=anon
+				/shop-user/login.do=anon
+				/images/**=anon
+				/shop-user/register.do=anon
+				/shop-user/addPlainUsers.do=anon
+				/shop-user/updateMagess.do=anon
+				/shop-user/updatePwds.do=anon
+
+
+
+				/addCrat.do=anon
+				/delByid.do=anon
+				/delByIdsA.do=anon
+				/getUserIdC.do=anon
+
+				/getByNames.do=anon
+				/getIdGoods.do=anon
+				/getTypeIdlist.do=anon
+				/roundGoods.do=anon
+
+				/getGoods.do=anon
+
+				/FenyeLists.do=anon
+				/getCounts.do=anon
+				/pay_order.do=anon
+				/paysDing.do=anon
+
+				/addPlainUsers.do=anon
+				/loginOut.do=anon
+				/updateMagess.do=anon
+				/updatePwds.do=anon
+				/getByIdGoodsCartId.do=anon
+
+				/getByIdaddress.do=anon
+				/updateAddress.do=anon
+
+				/shop-user/getUserIdC.do=anon
+
+				/css/**=anon
+				/js/**=anon
+				/Shop-SSM/images/**=anon
+				/**=authc
+			</value>
+		</property>
+
+	</bean>
+
+	<!--
+            3.配置Realm
+            3.1直接实现Realm接口的bean
+          -->
+<!--	<bean id="jdbcRealm"  class="com.ssm.shiro.MyRealm">-->
+<!--		<property name="credentialsMatcher">-->
+<!--			<bean  class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">-->
+
+<!--				&lt;!&ndash; 加密的方法 &ndash;&gt;-->
+<!--				<property name="hashAlgorithmName" value="MD5"/>-->
+
+<!--				&lt;!&ndash; 指定加密的次数 &ndash;&gt;-->
+<!--				<property name="hashIterations" value="20"/>-->
+<!--			</bean>-->
+<!--		</property>-->
+
+<!--	</bean>-->
+
+</beans>
