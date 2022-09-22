@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+	id="WebApp_ID" version="3.1">
+
+
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>classpath:spring/applicationContext-*.xml</param-value>
+	</context-param>
+	
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+  
+  
+
+  <servlet>
+  <servlet-name>springmvc</servlet-name>
+  <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+  <init-param>
+  
+  <param-name>contextConfigLocation</param-name>
+  <param-value>classpath:spring/applicationContext.xml</param-value>
+  </init-param>
+  </servlet>
+  
+  <servlet-mapping>
+  <servlet-name>springmvc</servlet-name>
+
+  <url-pattern>/</url-pattern>
+  </servlet-mapping>
+
+
+	<filter>
+		<filter-name>CharacterEncodingFilter</filter-name>
+		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>utf-8</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>CharacterEncodingFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<!--filter标 签 用 于 配 置 一 个 Filter过 滤 器 -->
+	<filter>
+		<!--给 filter起 一 个 别 名 -->
+		<filter-name>AdminFilter</filter-name>
+		<!--配 置 filter 的 全 类 名 -->
+		<filter-class>com.ssm.shiro.AdminFilter</filter-class>
+	</filter>
+	<!--filter-mapping配 置 Filter过 滤 器 的 拦 截 路 径 -->
+	<filter-mapping>
+		<!--filter-name表 示 当 前 的 拦 截 路 径 给 哪 个 filter使 用 -->
+		<filter-name>AdminFilter</filter-name>
+		<!--url-pattern 配 置 拦 截 路 径
+        / 表 示 请 求 地 址 为 ： http://ip:port/ 工 程 路 径 /映 射 到 IDEA的web目 录
+        /admin/*表 示 请 求 地 址 为 ： http://ip:port/ 工 程 路 径 /admin/*-->
+		<url-pattern>/shop-user/user_center_order.jsp</url-pattern>
+		<url-pattern>/shop-user/user_center_info.jsp</url-pattern>
+		<url-pattern>/shop-user/user_center_order.jsp</url-pattern>
+		<url-pattern>/shop-user/cart.jsp</url-pattern>
+		<url-pattern>/addCrat.do</url-pattern>
+		<url-pattern>/shop-user/place_order_user.jsp</url-pattern>
+	</filter-mapping>
+  
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.htm</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>default.html</welcome-file>
+    <welcome-file>default.htm</welcome-file>
+    <welcome-file>default.jsp</welcome-file>
+  </welcome-file-list>
+
+	<!--配置shiro的过滤器
+    注意：spring会在ioc容器去找filter同名的bean，因此filter的名字不能乱改
+  -->
+	<filter>
+		<filter-name>shiroFilter</filter-name>
+		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+		<init-param>
+			<param-name>targetFilterLifecycle</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>shiroFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+
+
+
+
+</web-app>
