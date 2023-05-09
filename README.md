@@ -1,5 +1,5 @@
-SSM+shiro框架编写的线上游戏商城小项目，具有简单的权限控制 前端页面框架结构参考了项目https://github.com/Snykta/Shop-SSM
-
+SSM+shiro框架编写的线上游戏商城小项目，具有简单的权限控制 框架结构参考了项目https://github.com/Snykta/Shop-SSM
+添加了shiro权限控制，以及修改部分细节
 # Shop-SSM
 
 tomcat版本：9.0.52
